@@ -1,10 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'homepage.dart';
 
 class SignUpScreen extends StatelessWidget {
+  final TextEditingController fullnameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
+      appBar: AppBar(
         title: const Text('Register', style: TextStyle(color: Color.fromARGB(218, 255, 255, 255))),
         backgroundColor: const Color(0xFF4A1C6F),
         leading: IconButton(
@@ -31,6 +41,7 @@ class SignUpScreen extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               TextField(
+                controller: fullnameController,
                 style: TextStyle(color: Colors.white),
                 decoration: InputDecoration(
                   labelText: 'Fullname',
@@ -45,6 +56,7 @@ class SignUpScreen extends StatelessWidget {
               ),
               const SizedBox(height: 15),
               TextField(
+                controller: emailController,
                 style: TextStyle(color: Colors.white),
                 decoration: InputDecoration(
                   labelText: 'Email',
@@ -59,6 +71,7 @@ class SignUpScreen extends StatelessWidget {
               ),
               const SizedBox(height: 15),
               TextField(
+                controller: passwordController,
                 style: TextStyle(color: Colors.white),
                 decoration: InputDecoration(
                   labelText: 'Password',
@@ -76,8 +89,8 @@ class SignUpScreen extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {
-                    // Implement sign up functionality here
+                  onPressed: () async {
+                    await signUp(context);
                   },
                   child: const Text(
                     'Sign Up',
@@ -101,8 +114,8 @@ class SignUpScreen extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton.icon(
-                  onPressed: () {
-                    // Implement sign up with Google functionality here
+                  onPressed: () async {
+                    await signUpWithGoogle(context);
                   },
                   icon: Image.asset('assets/image/google.png', height: 24), // Update this to your Google icon path
                   label: const Text('Sign Up with Google', style: TextStyle(color: Colors.white),),
@@ -134,5 +147,50 @@ class SignUpScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> signUp(BuildContext context) async {
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text,
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Successfully signed up!')));
+      Navigator.of(context).pop(); // Optionally navigate to another page
+    } on FirebaseAuthException catch (e) {
+      String message;
+      if (e.code == 'weak-password') {
+        message = 'The password provided is too weak.';
+      } else if (e.code == 'email-already-in-use') {
+        message = 'The account already exists for that email.';
+      } else {
+        message = e.message ?? 'An error occurred';
+      }
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('An error occurred')));
+    }
+  }
+
+  Future<void> signUpWithGoogle(BuildContext context) async {
+    try {
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      final GoogleSignInAuthentication googleAuth = await googleUser!.authentication;
+
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      final UserCredential userCredential = await _firebaseAuth.signInWithCredential(credential);
+
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Successfully signed up with Google!')));
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Homepage())); // Optionally navigate to the homepage
+    } on FirebaseAuthException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to sign up with Google: ${e.message}')));
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('An error occurred')));
+    }
   }
 }

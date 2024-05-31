@@ -1,12 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'signuppage.dart';
 import 'homepage.dart';
 import 'forgotpassword.dart';
 import 'adminpage.dart';
+import '../../Controller/firebase_auth_services.dart';
 
-class LoginRegisterScreen extends StatelessWidget {
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+class LoginRegisterScreen extends StatefulWidget {
+  @override
+  State<LoginRegisterScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginRegisterScreen> {
+  final FirebaseAuthService _auth = FirebaseAuthService();
+
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +63,7 @@ class LoginRegisterScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 20),
                     TextField(
-                      controller: emailController,
+                      controller: _emailController,
                       style: TextStyle(color: Colors.white),
                       decoration: InputDecoration(
                         labelText: 'Email',
@@ -62,8 +78,8 @@ class LoginRegisterScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 20),
                     TextField(
-                      controller: passwordController,
-                      style: TextStyle(color: Colors.white),
+                      controller: _passwordController,
+                      style: const TextStyle(color: Colors.white),
                       decoration: InputDecoration(
                         labelText: 'Password',
                         hintText: 'Enter your password',
@@ -93,23 +109,9 @@ class LoginRegisterScreen extends StatelessWidget {
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () {
-                          String email = emailController.text;
-                          if (email == 'admin@gmail.com') {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(builder: (context) => AdminPage()),
-                            );
-                          } else if (email == 'user@gmail.com') {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(builder: (context) => Homepage()),
-                            );
-                          } else {
-                            // Handle invalid email case
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Invalid email. Please try again.')),
-                            );
-                          }
+                          _signIn();
                         },
-                        child: const Text(
+                        child: Text(
                           'Sign In',
                           style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16.0),
                         ),
@@ -168,5 +170,34 @@ class LoginRegisterScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _signIn() async {
+    String email = _emailController.text.trim();
+    String password = _passwordController.text.trim();
+
+    try {
+      User? user = await _auth.signInWithEmailAndPassword(email, password);
+      if (user != null) {
+        print('User signed in: ${user.email}');
+        if (email == 'admin@gmail.com') {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => AdminPage())
+          );
+        } else {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => Homepage())
+          );
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Sign in failed. Please try again.')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: ${e.toString()}')),
+      );
+    }
   }
 }

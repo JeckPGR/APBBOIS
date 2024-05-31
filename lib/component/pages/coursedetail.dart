@@ -21,12 +21,15 @@ class CourseDetailPage extends StatefulWidget {
 }
 
 class _CourseDetailPageState extends State<CourseDetailPage> {
+  bool isDescriptionSelected = true;
+  bool isLoved = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Course Details'),
-        backgroundColor: Color(0xFF4A1C6F),
+        title: const Text('Course detail', style: TextStyle(color: Colors.white)),
+        backgroundColor: const Color(0xFF4A1C6F),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -39,30 +42,107 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    widget.title,
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            isDescriptionSelected = true;
+                          });
+                        },
+                        child: Text(
+                          'DESCRIPTION',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: isDescriptionSelected ? Colors.purple : Colors.grey,
+                          ),
+                        ),
+                      ),
+                      const Spacer(),
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            isDescriptionSelected = false;
+                          });
+                        },
+                        child: Text(
+                          'SYLLABUS',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: !isDescriptionSelected ? Colors.purple : Colors.grey,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 10),
-                  Text(
-                    'Jalan Buah Batu No 118',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    widget.description,
-                    style: TextStyle(fontSize: 16),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              widget.title,
+                              style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(height: 4),
+                            const Text(
+                              'JALAN BUAH BATU NO 118',
+                              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(
+                          isLoved ? Icons.favorite : Icons.favorite_border,
+                          color: isLoved ? Colors.red : Colors.grey,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            isLoved = !isLoved;
+                          });
+                        },
+                      ),
+                      const SizedBox(width: 8),
+                      const Icon(Icons.share, color: Colors.grey),
+                    ],
                   ),
                   const SizedBox(height: 20),
-                  Text(
-                    'Course Schedule',
+                  if (isDescriptionSelected) ...[
+                    const Text(
+                      'DESCRIPTION',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      widget.description,
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                  ] else ...[
+                    const Text(
+                      'SYLLABUS',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 10),
+                    const Text(
+                      'Syllabus belum siap.',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ],
+                  const SizedBox(height: 20),
+                  const Text(
+                    'COURSE SCHEDULE',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 10),
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     decoration: BoxDecoration(
-                      color: Color(0xFF1C1B33),
+                      color: const Color(0xFF1C1B33),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Row(
@@ -82,8 +162,8 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  Text(
-                    'Comments (5)',
+                  const Text(
+                    'COMMENTS (5)',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 10),
@@ -92,25 +172,23 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
                       CommentWidget(
                         name: 'Goo Youn Jung',
                         comment: 'Lorem ipsum dolor sit amet...',
-                        type: 'Linguist',
                       ),
                       CommentWidget(
                         name: 'Baek Song min',
                         comment: 'Lorem ipsum dolor sit amet...',
-                        type: 'Scholar',
                       ),
                     ],
                   ),
-                  const SizedBox(height: 20),
-                  Text(
-                    'Overall Rating',
+                  const SizedBox(height: 10),
+                  const Text(
+                    'OVERALL RATING',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                  const SizedBox(height: 10),
+        
                   Center(
                     child: Column(
                       children: [
-                        Text(
+                        const Text(
                           '8.5',
                           style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
                         ),
@@ -118,29 +196,36 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: List.generate(
                             5,
-                            (index) => Icon(Icons.star, color: Colors.yellow),
+                            (index) => const Icon(Icons.star, color: Colors.yellow),
                           ),
                         ),
-                        Text(
+                        const Text(
                           'Based on 3 Reviews',
                           style: TextStyle(fontSize: 14),
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 20),
                   Center(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => FormDaftar()),
-                        );
-                      },
-                      child: Text('Daftar'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF4A1C6F),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(vertical: 20),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(builder: (context) => FormDaftar()),
+                          );
+                        },
+                        child: Text(
+                          'DAFTAR',
+                          style: TextStyle(color: Colors.white), // Warna teks menjadi putih
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color(0xFF4A1C6F), // Warna latar belakang ungu
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                          minimumSize: Size(double.infinity, 50), // Tombol menjadi lebih lebar
                         ),
                       ),
                     ),
@@ -158,21 +243,24 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
 class CommentWidget extends StatelessWidget {
   final String name;
   final String comment;
-  final String type;
 
   CommentWidget({
     required this.name,
     required this.comment,
-    required this.type,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5),
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 5),
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey),
+        borderRadius: BorderRadius.circular(10),
+      ),
       child: Row(
         children: [
-          CircleAvatar(
+          const CircleAvatar(
             radius: 20,
             backgroundImage: AssetImage('assets/image/programming.png'),
           ),
@@ -183,17 +271,19 @@ class CommentWidget extends StatelessWidget {
               children: [
                 Text(
                   name,
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 5),
-                Text(comment),
+                Text(
+                  comment,
+                  style: const TextStyle(color: Colors.grey),
+                ),
+                const Text(
+                  'Post sent | 1 days ago',
+                  style: TextStyle(color: Colors.grey, fontSize: 12),
+                ),
               ],
             ),
-          ),
-          Chip(
-            label: Text(type),
-            backgroundColor: type == 'Scholar' ? Colors.purple : Colors.grey,
-            labelStyle: TextStyle(color: Colors.white),
           ),
         ],
       ),

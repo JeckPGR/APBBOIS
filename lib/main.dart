@@ -1,9 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'component/pages/loginpage.dart';
 
-void main() {
-  runApp(EduLocalApp());
+
+ void main() async {
+   WidgetsFlutterBinding.ensureInitialized();
+   await Firebase.initializeApp();
+   runApp(EduLocalApp());
 }
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: LoginRegisterScreen(),
+    );
+  }
+}
+
 
 class EduLocalApp extends StatelessWidget {
   @override
@@ -28,7 +46,7 @@ class WelcomeScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFF4A1C6F),
       body: Container(
-        padding: EdgeInsets.all(25.0),
+        padding: const EdgeInsets.all(25.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           crossAxisAlignment: CrossAxisAlignment.start,

@@ -97,7 +97,7 @@ class _HomepageState extends State<Homepage> {
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(16.0),
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Color(0xFF4A1C6F),
               borderRadius: BorderRadius.vertical(
                 bottom: Radius.circular(25.0),
@@ -107,11 +107,11 @@ class _HomepageState extends State<Homepage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 50),
-                Text(
-                  'Hello, Dzaky',
+                const Text(
+                  'Hello, Peeps!',
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
                 ),
-                Row(
+                const Row(
                   children: [
                     Icon(Icons.location_on, color: Colors.white),
                     Text('Jl. Sukabirus No 15', style: TextStyle(color: Colors.white)),
@@ -123,16 +123,16 @@ class _HomepageState extends State<Homepage> {
                 TextField(
                   decoration: InputDecoration(
                     hintText: 'Find Course..',
-                    hintStyle: TextStyle(color: Colors.white),
-                    prefixIcon: Icon(Icons.search, color: Colors.white),
+                    hintStyle: const TextStyle(color: Colors.white),
+                    prefixIcon: const Icon(Icons.search, color: Colors.white),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30.0),
                       borderSide: BorderSide.none,
                     ),
-                    fillColor: Color.fromARGB(40, 217, 217, 217),
+                    fillColor: const Color.fromARGB(40, 217, 217, 217),
                     filled: true,
                   ),
-                  style: TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.white),
                 ),
               ],
             ),
@@ -144,7 +144,7 @@ class _HomepageState extends State<Homepage> {
             child: Container(
               padding: const EdgeInsets.all(20.0),
               decoration: BoxDecoration(
-                color: Color(0xFF4A1C6F),
+                color: const Color(0xFF4A1C6F),
                 borderRadius: BorderRadius.circular(16.0),
               ),
               child: Row(
@@ -152,20 +152,21 @@ class _HomepageState extends State<Homepage> {
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
+                      children:  [
+                        const Text(
                           'New Course!',
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 18,
+                            fontSize: 21,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        Text(
+                        const Text(
                           'UI-UX Research',
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 16,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500
                           ),
                         ),
                         const SizedBox(height: 5),
@@ -173,9 +174,9 @@ class _HomepageState extends State<Homepage> {
                           onPressed: () {
                             // Implement View Now functionality here
                           },
-                          child: Text('View Now'),
+                          child: const  Text('View Now', style:TextStyle(color: Colors.white)),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Color.fromARGB(255, 245, 91, 212),
+                            backgroundColor: const Color.fromARGB(255, 245, 91, 212),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20),
                             ),
@@ -184,19 +185,19 @@ class _HomepageState extends State<Homepage> {
                       ],
                     ),
                   ),
-                  Image.asset('assets/image/newcourse.png', height: 120, fit: BoxFit.cover),
+                  Image.asset('assets/image/newcourse.png', height: 120, fit: BoxFit.contain),
                 ],
               ),
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 40),
           // Recommended Courses Section
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                const Text(
                   'Recommended Course',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
@@ -220,7 +221,7 @@ class _HomepageState extends State<Homepage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
+                    const Text(
                       'Course',
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
@@ -228,17 +229,20 @@ class _HomepageState extends State<Homepage> {
                       onPressed: () {
                         _onTabChange(1); // Change to the Course page tab
                       },
-                      child: Text('Show All'),
+                      child: const Text('Show All'),
                     ),
                   ],
                 ),
-                Wrap(
-                  spacing: 8.0,
-                  children: [
-                    _buildCategoryButton('Programming'),
-                    _buildCategoryButton('English'),
-                    _buildCategoryButton('Coming Soon...'),
-                  ],
+                 SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Wrap(
+                    spacing: 8.0,
+                    children: [
+                      _buildCategoryButton('Programming'),
+                      _buildCategoryButton('English'),
+                      _buildCategoryButton('Coming Soon...'),
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 20),
                 // Display courses based on selected category
@@ -252,61 +256,73 @@ class _HomepageState extends State<Homepage> {
   }
 
   Widget _buildRecommendedCourseCard(Course course) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => CourseDetailPage(
-              title: course.title,
-              description: course.description,
-              imagePath: course.imagePath,
-              courseDays: course.courseDays,
-              holidays: course.holidays,
-            ),
-          ),
-        );
-      },
-      child: Card(
-        margin: EdgeInsets.symmetric(horizontal: 8.0),
-        child: Container(
-          width: 160,
-          padding: EdgeInsets.all(8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Image.asset(course.imagePath, height: 100, fit: BoxFit.cover),
-              const SizedBox(height: 5),
-              Text(
-                course.title,
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              Text(
-                course.description,
-                style: TextStyle(color: Colors.grey),
-              ),
-              Row(
-                children: [
-                  Icon(Icons.star, color: Colors.amber, size: 16),
-                  Text('4.8'),
-                ],
-              ),
-            ],
+  return GestureDetector(
+    onTap: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CourseDetailPage(
+            title: course.title,
+            description: course.description,
+            imagePath: course.imagePath,
+            courseDays: course.courseDays,
+            holidays: course.holidays,
           ),
         ),
+      );
+    },
+    child: Card(
+      margin: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: Container(
+        height: 210,
+        width: 160,
+        padding: const EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          color: Colors.white, // Custom background color
+          borderRadius: BorderRadius.circular(4.0), // Custom border radius
+          border: Border.all(
+            color: const Color.fromARGB(255, 207, 205, 205), // Custom border color
+            width: 0.5, // Custom border width
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Image.asset(course.imagePath, height: 100, fit: BoxFit.cover),
+            const SizedBox(height: 5),
+            Text(
+              course.title,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            Text(
+              course.description,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis, // Changed from clip to ellipsis
+              style: const TextStyle(color: Colors.grey, fontSize: 12, fontWeight: FontWeight.w200),
+            ),
+            const Row(
+              children: [
+                Icon(Icons.star, color: Colors.amber, size: 16),
+                Text('4.8'),
+              ],
+            ),
+          ],
+        ),
       ),
-    );
-  }
+    ),
+  );
+}
+
 
   Widget _buildCategoryButton(String category) {
     return GestureDetector(
       onTap: () => _onCategorySelected(category),
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
         decoration: BoxDecoration(
-          color: _selectedCategory == category ? Color(0xFF4A1C6F) : Colors.white,
+          color: _selectedCategory == category ? const Color(0xFF4A1C6F) : Colors.white,
           borderRadius: BorderRadius.circular(20.0),
-          border: Border.all(color: Color(0xFF4A1C6F)),
+          border: Border.all(color: const Color(0xFF4A1C6F)),
         ),
         child: Text(
           category,
@@ -335,10 +351,13 @@ class _HomepageState extends State<Homepage> {
     };
 
     if (category == 'Coming Soon...') {
-      return Center(
-        child: Text(
-          'Coming Soon...',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      return Padding(
+        padding: EdgeInsets.symmetric(vertical: 28.0),
+        child:  Center(
+          child: Text(
+            'Coming Soon...',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black45),
+          ),
         ),
       );
     } else {
@@ -353,9 +372,9 @@ class _HomepageState extends State<Homepage> {
 
   Widget _buildDetailedCourseCard(String title, String location, String schedule, String distance) {
     return Card(
-      margin: EdgeInsets.symmetric(vertical: 8.0),
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
       child: Container(
-        padding: EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(8.0),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -367,28 +386,28 @@ class _HomepageState extends State<Homepage> {
                 children: [
                   Text(
                     title,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                   const SizedBox(height: 5),
                   Row(
                     children: [
-                      Icon(Icons.location_on, size: 14, color: Colors.grey),
+                      const Icon(Icons.location_on, size: 14, color: Colors.grey),
                       const SizedBox(width: 4),
                       Expanded(
-                        child: Text(location, style: TextStyle(color: Colors.grey), overflow: TextOverflow.ellipsis),
+                        child: Text(location, style: const TextStyle(color: Colors.grey), overflow: TextOverflow.ellipsis),
                       ),
                       const SizedBox(width: 10),
-                      Text(distance, style: TextStyle(color: Colors.grey)),
+                      Text(distance, style: const TextStyle(color: Colors.grey)),
                     ],
                   ),
                   const SizedBox(height: 5),
-                  Text(schedule, style: TextStyle(color: Colors.grey)),
+                  Text(schedule, style: const TextStyle(color: Colors.grey)),
                   const SizedBox(height: 5),
                   TextButton(
                     onPressed: () {
                       // Implement View Details functionality here
                     },
-                    child: Text('View Details', style: TextStyle(color: Color(0xFF4A1C6F))),
+                    child: const Text('View Details', style: TextStyle(color: Color(0xFF4A1C6F))),
                   ),
                 ],
               ),
@@ -396,12 +415,12 @@ class _HomepageState extends State<Homepage> {
             Column(
               children: [
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                   decoration: BoxDecoration(
-                    color: Color(0xFF4A1C6F),
+                    color: const Color(0xFF4A1C6F),
                     borderRadius: BorderRadius.circular(10.0),
                   ),
-                  child: Text(
+                  child: const Text(
                     'Recommended',
                     style: TextStyle(color: Colors.white, fontSize: 12),
                   ),

@@ -2,17 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/component/pages/loginpage.dart';
 import 'package:flutter_application_1/component/pages/personalinfo.dart';
 import 'package:flutter_application_1/component/pages/coursedetail.dart';
+import 'package:flutter_application_1/component/pages/requestowner.dart';
 
 class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'My Profile',
           style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
         ),
-        backgroundColor: Color(0xFF4A1C6F),
+        backgroundColor: const Color.fromARGB(255, 58, 20, 88),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -126,7 +127,11 @@ class ProfilePage extends StatelessWidget {
                 icon: Icons.people,
                 title: 'Request Become Owner',
                 onTap: () {
-                  // Handle request become owner tap
+                  Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => RequestOwnerPage(),
+                  ),
+                );
                 },
               ),
               _buildListTile(
