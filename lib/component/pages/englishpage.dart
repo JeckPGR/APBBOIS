@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 
 class EnglishCoursesPage extends StatelessWidget {
+   const EnglishCoursesPage({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Show Course'),
-        backgroundColor: Color(0xFF4A1C6F),
+        title: const Text('Show Course'),
+        backgroundColor: const Color(0xFF4A1C6F),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'English',
               style: TextStyle(
                 color: Colors.black,
@@ -21,17 +22,17 @@ class EnglishCoursesPage extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 10),
+           const  SizedBox(height: 10),
             TextField(
               decoration: InputDecoration(
                 hintText: 'Find by location, name',
-                prefixIcon: Icon(Icons.search),
+                prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Expanded(
               child: ListView(
                 children: [
@@ -85,7 +86,7 @@ class EnglishCoursesPage extends StatelessWidget {
     required String imagePath,
   }) {
     return Card(
-      margin: EdgeInsets.symmetric(vertical: 8.0),
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Row(
@@ -99,25 +100,25 @@ class EnglishCoursesPage extends StatelessWidget {
                 fit: BoxFit.cover,
               ),
             ),
-            SizedBox(width: 10),
+            const SizedBox(width: 10),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     title,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
                     ),
                   ),
-                  SizedBox(height: 5),
+                  const SizedBox(height: 5),
                   Text(location),
                   Text(schedule),
                   Text(price),
                   Row(
                     children: [
-                      Icon(Icons.star, color: Colors.amber, size: 16),
+                     const Icon(Icons.star, color: Colors.amber, size: 16),
                       Text(rating.toString()),
                     ],
                   ),

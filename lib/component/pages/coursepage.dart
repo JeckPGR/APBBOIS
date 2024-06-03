@@ -2,15 +2,18 @@ import 'package:flutter/material.dart';
 import 'englishpage.dart';
 import 'programmingpage.dart';
 
-void main() => runApp(MaterialApp(home: CoursePage()));
+void main() => runApp(const MaterialApp(home:  CoursePage()));
 
 class CoursePage extends StatelessWidget {
+   const CoursePage({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Courses'),
-        backgroundColor: Color(0xFF4A1C6F),
+
+        centerTitle: true,
+        title:const  Text('Courses' , style: TextStyle(color: Colors.white),),
+        backgroundColor: const Color(0xFF4A1C6F),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -22,23 +25,23 @@ class CoursePage extends StatelessWidget {
                 context: context,
                 imagePath: 'assets/image/english.png',
                 label: 'Bahasa Inggris',
-                backgroundColor: Color.fromARGB(76, 245, 91, 212),
+                backgroundColor:const Color.fromARGB(76, 245, 91, 212),
                 imageAlignment: Alignment.bottomRight,
-                navigateTo: EnglishCoursesPage(),
-                textColor: Color(0xFF4A1C6F), // Same color as "Yang Mungkin Anda Sukai"
+                navigateTo: const EnglishCoursesPage(),
+                textColor: const Color(0xFF4A1C6F), // Same color as "Yang Mungkin Anda Sukai"
               ),
               const SizedBox(height: 10),
               _buildImageCard(
                 context: context,
                 imagePath: 'assets/image/programming.png',
                 label: 'Pemrograman',
-                backgroundColor: Color.fromARGB(160, 219, 97, 241),
+                backgroundColor:const Color.fromARGB(160, 219, 97, 241),
                 imageAlignment: Alignment.bottomLeft,
-                navigateTo: ProgrammingCoursesPage(),
-                textColor: Color(0xFF4A1C6F), // Same color as "Yang Mungkin Anda Sukai"
+                navigateTo: const ProgrammingCoursesPage(),
+                textColor:const Color(0xFF4A1C6F), // Same color as "Yang Mungkin Anda Sukai"
               ),
               const SizedBox(height: 20),
-              Text(
+              const Text(
                 'Yang Mungkin Anda Sukai',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF4A1C6F)),
               ),
@@ -69,7 +72,7 @@ class CoursePage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-              Text(
+              const Text(
                 'Terdekat Anda',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF4A1C6F)),
               ),
@@ -123,7 +126,7 @@ class CoursePage extends StatelessWidget {
         );
       },
       child: Container(
-        margin: EdgeInsets.symmetric(vertical: 5.0),
+        margin: const EdgeInsets.symmetric(vertical: 5.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           color: backgroundColor,
@@ -133,7 +136,7 @@ class CoursePage extends StatelessWidget {
           children: [
             Align(
               alignment: imageAlignment,
-              child: Container(
+              child:  SizedBox(
                 width: 195,
                 height: 120,
                 child: FittedBox(
@@ -172,10 +175,19 @@ class CoursePage extends StatelessWidget {
     required String imagePath,
   }) {
     return Card(
-      margin: EdgeInsets.symmetric(horizontal: 8.0),
+      margin: const EdgeInsets.symmetric(horizontal: 8.0),
       child: Container(
+        height: 205,
         width: 160,
-        padding: EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          color: Colors.white, // Custom background color
+          borderRadius: BorderRadius.circular(4.0), // Custom border radius
+          border: Border.all(
+            color: const Color.fromARGB(255, 207, 205, 205), // Custom border color
+             width: 0.5, // Custom border width
+          )
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -191,17 +203,17 @@ class CoursePage extends StatelessWidget {
             const SizedBox(height: 5),
             Text(
               title,
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style:const TextStyle(fontWeight: FontWeight.bold),
             ),
             Text(
               description,
-              style: TextStyle(color: Colors.grey),
+              style:const TextStyle(color: Colors.grey),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
             Row(
-              children: [
-                Icon(Icons.star, color: Colors.amber, size: 16),
+              children:  [
+                const Icon(Icons.star, color: Colors.amber, size: 16),
                 Text(rating),
               ],
             ),

@@ -4,13 +4,13 @@ import 'package:flutter_application_1/component/pages/sendnotif.dart';
 class CourseAdminDetailPage extends StatefulWidget {
   final Map<String, String> course;
 
-  const CourseAdminDetailPage({required this.course});
+  const CourseAdminDetailPage({required this.course ,super.key});
 
   @override
-  _CourseDetailPageState createState() => _CourseDetailPageState();
+  CourseDetailPageState createState() => CourseDetailPageState();
 }
 
-class _CourseDetailPageState extends State<CourseAdminDetailPage> {
+class CourseDetailPageState extends State<CourseAdminDetailPage> {
   bool showNotificationForm = false;
   final TextEditingController notificationTitleController = TextEditingController();
   final TextEditingController notificationMessageController = TextEditingController();
@@ -20,19 +20,19 @@ class _CourseDetailPageState extends State<CourseAdminDetailPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Color(0xFF4A1C6F),
+          backgroundColor: const Color(0xFF4A1C6F),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          title: Text(
+          title: const Text(
             "Notification Sent",
             style: TextStyle(color: Colors.white),
           ),
-          content: Text(
+          content:const  Text(
             "You have notified the owner",
             style: TextStyle(color: Colors.white),
           ),
           actions: [
             TextButton(
-              child: Text(
+              child: const Text(
                 "OK",
                 style: TextStyle(color: Colors.white),
               ),
@@ -55,64 +55,64 @@ class _CourseDetailPageState extends State<CourseAdminDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Course Details'),
-        backgroundColor: Color(0xFF4A1C6F),
+        title: const Text('Course Details'),
+        backgroundColor: const Color(0xFF4A1C6F),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView(
-          children: [
+          children:  [
             DetailItem(title: "Owner", value: widget.course["instructor"]!),
             DetailItem(title: "Course name", value: widget.course["title"]!),
             DetailItem(title: "Course location", value: widget.course["location"]!),
-            DetailItem(title: "Course subdistrict", value: "Dayeuhkolot"), // Update this as necessary
+           const  DetailItem(title: "Course subdistrict", value: "Dayeuhkolot"), // Update this as necessary
             DetailItem(title: "Course Description", value: widget.course["description"]!),
-            SizedBox(height: 16.0),
-            Text("Course Image", style: TextStyle(fontWeight: FontWeight.bold)),
-            SizedBox(height: 8.0),
+           const SizedBox(height: 16.0),
+            const Text("Course Image", style: TextStyle(fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8.0),
             Image.asset(widget.course["image"]!, fit: BoxFit.cover),
-            SizedBox(height: 16.0),
+           const  SizedBox(height: 16.0),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF4A1C6F), // background color
+                backgroundColor: const Color(0xFF4A1C6F), // background color
               ),
               onPressed: () {
                 setState(() {
                   showNotificationForm = true;
                 });
               },
-              child: Text('Confirm Course'),
+              child: const Text('Confirm Course'),
             ),
             if (showNotificationForm) ...[
-              SizedBox(height: 16.0),
-              Text("Insert Your Notification Info", style: TextStyle(fontWeight: FontWeight.bold)),
-              SizedBox(height: 8.0),
+               const SizedBox(height: 16.0),
+               const Text("Insert Your Notification Info", style: TextStyle(fontWeight: FontWeight.bold)),
+               const SizedBox(height: 8.0),
               TextField(
                 controller: notificationTitleController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Notification Title',
                   border: OutlineInputBorder(),
                 ),
               ),
-              SizedBox(height: 8.0),
+              const SizedBox(height: 8.0),
               TextField(
                 controller: notificationMessageController,
-                decoration: InputDecoration(
+                decoration: const  InputDecoration(
                   labelText: 'Notification Message',
                   border: OutlineInputBorder(),
                 ),
                 maxLines: 3,
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF4A1C6F), // background color
+                  backgroundColor:const  Color(0xFF4A1C6F), // background color
                 ),
                 onPressed: () {
                   // Show notification dialog
                   _showNotificationDialog();
                 },
-                child: Text('Send Notification'),
+                child: const Text('Send Notification'),
               ),
             ]
           ],
@@ -126,7 +126,7 @@ class DetailItem extends StatelessWidget {
   final String title;
   final String value;
 
-  const DetailItem({required this.title, required this.value});
+  const DetailItem({required this.title, required this.value ,super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -134,11 +134,11 @@ class DetailItem extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey)),
-          SizedBox(height: 4.0),
+        children:  [
+          Text(title, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.grey)),
+          const SizedBox(height: 4.0),
           Text(value),
-          Divider(color: Colors.grey),
+          const Divider(color: Colors.grey),
         ],
       ),
     );

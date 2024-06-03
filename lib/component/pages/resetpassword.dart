@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'loginpage.dart'; // Import the sign-in page
 
 class ResetPasswordPage extends StatelessWidget {
+  const ResetPasswordPage({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,22 +78,22 @@ class ResetPasswordPage extends StatelessWidget {
                   onPressed: () {
                     Navigator.pushAndRemoveUntil(
                       context,
-                      MaterialPageRoute(builder: (context) => LoginRegisterScreen()),
+                      MaterialPageRoute(builder: (context) => const LoginRegisterScreen()),
                       (Route<dynamic> route) => false,
                     );
                   },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF6F1EAB), // Button color
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
+                  ),
                   child: const Text(
                     'Send',
                     style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                         fontSize: 16.0),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF6F1EAB), // Button color
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
                   ),
                 ),
               ),

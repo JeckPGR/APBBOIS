@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
 class RequestOwnerPage extends StatefulWidget {
+  const RequestOwnerPage({super.key});
   @override
-  _RequestOwnerPageState createState() => _RequestOwnerPageState();
+  RequestOwnerPageState createState() => RequestOwnerPageState();
 }
 
-class _RequestOwnerPageState extends State<RequestOwnerPage> {
+class RequestOwnerPageState extends State<RequestOwnerPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -21,7 +22,7 @@ class _RequestOwnerPageState extends State<RequestOwnerPage> {
     if (_formKey.currentState?.validate() ?? false) {
       // Perform the form submission logic, such as sending the data to the server
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Form submitted successfully!')),
+       const SnackBar(content: Text('Form submitted successfully!')),
       );
     }
   }
@@ -64,38 +65,37 @@ class _RequestOwnerPageState extends State<RequestOwnerPage> {
     }
   }
 
-  Widget _buildFileUploadField(String labelText) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(labelText),
-        SizedBox(height: 8),
-        Container(
-          height: 150,
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey),
-          ),
-          child: Center(
-            child: ElevatedButton(
-              onPressed: () {
-                // Handle file upload
-              },
-              child: Text('Insert File'),
-            ),
-          ),
-        ),
-        SizedBox(height: 16),
-      ],
-    );
-  }
+  // Widget _buildFileUploadField(String labelText) {
+  //   return Column(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     children: [
+  //       Text(labelText),
+  //       const SizedBox(height: 8),
+  //       Container(
+  //         height: 150,
+  //         decoration: BoxDecoration(
+  //           border: Border.all(color: Colors.grey),
+  //         ),
+  //         child: Center(
+  //           child: ElevatedButton(
+  //             onPressed: () {
+  //               // Handle file upload
+  //             },
+  //             child: const Text('Insert File'),
+  //           ),
+  //         ),
+  //       ),
+  //       const SizedBox(height: 16),
+  //     ],
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        
          backgroundColor: const Color.fromARGB(255, 58, 20, 88),
-        title: Text('Regist Owner' , style:TextStyle(color: Color.fromARGB(255, 255, 255, 255))),
+        title: const Text('Regist Owner' , style:TextStyle(color: Color.fromARGB(255, 255, 255, 255))),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -103,13 +103,13 @@ class _RequestOwnerPageState extends State<RequestOwnerPage> {
           key: _formKey,
           child: ListView(
             children: [
-              Text(
+              const Text(
                 'Course Information',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),
-              SizedBox(height: 8),
-              Text('Fill this form with your personal information'),
-              SizedBox(height: 16),
+              const SizedBox(height: 8),
+              const Text('Fill this form with your personal information'),
+              const SizedBox(height: 16),
               _buildTextField(_nameController, 'Name'),
               _buildTextField(_emailController, 'Email', keyboardType: TextInputType.emailAddress, validator: (value) {
                 if (value == null || value.isEmpty) {
@@ -121,14 +121,14 @@ class _RequestOwnerPageState extends State<RequestOwnerPage> {
                 return null;
               }),
               _buildTextField(_phoneController, 'Phone Number', keyboardType: TextInputType.phone),
-              SizedBox(height: 16),
-              Text(
+              const SizedBox(height: 16),
+               const Text(
                 'Course Information',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),
-              SizedBox(height: 8),
-              Text('Fill this form with your Course information'),
-              SizedBox(height: 16),
+              const SizedBox(height: 8),
+              const Text('Fill this form with your Course information'),
+              const SizedBox(height: 16),
               _buildTextField(_courseNameController, 'Course Name'),
               _buildTextField(_courseEmailController, 'Course Email', keyboardType: TextInputType.emailAddress, validator: (value) {
                 if (value == null || value.isEmpty) {
@@ -140,14 +140,14 @@ class _RequestOwnerPageState extends State<RequestOwnerPage> {
                 return null;
               }),
               _buildTextField(_courseLocationController, 'Course Location'),
-              _buildTextField(_courseLatitudeController, 'Course Latitude', keyboardType: TextInputType.numberWithOptions(decimal: true)),
-              _buildTextField(_courseLongitudeController, 'Course Longitude', keyboardType: TextInputType.numberWithOptions(decimal: true)),
+              _buildTextField(_courseLatitudeController, 'Course Latitude', keyboardType: const TextInputType.numberWithOptions(decimal: true)),
+              _buildTextField(_courseLongitudeController, 'Course Longitude', keyboardType: const TextInputType.numberWithOptions(decimal: true)),
               _buildTextField(_coursePhoneController, 'Course Phone Number', keyboardType: TextInputType.phone),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
             
               ElevatedButton(
                 onPressed: _submitForm,
-                child: Text('Confirm'),
+                child: const Text('Confirm'),
               ),
             ],
           ),

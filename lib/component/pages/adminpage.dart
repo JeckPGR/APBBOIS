@@ -2,28 +2,38 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/component/pages/confirm.dart';
 import 'package:flutter_application_1/component/pages/deleterole.dart';
 import 'package:flutter_application_1/component/pages/sendnotif.dart';
+import 'package:geolocator/geolocator.dart';
 
 class AdminPage extends StatelessWidget {
+  const AdminPage({super.key});
+
+  void getLocation() async {
+
+    await Geolocator.checkPermission();
+    await Geolocator.requestPermission();
+    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    print(position);
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF5F5F5), // Background color of the body
+      backgroundColor:  const Color(0xFFF5F5F5), // Background color of the body
       appBar: AppBar(
-        backgroundColor: Color(0xFF4A1C6F), // AppBar background color
+        backgroundColor: const Color(0xFF4A1C6F), // AppBar background color
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.of(context).pop();
           },
         ),
-        title: Text('Admin Dashboard'),
+        title: const Text('Admin Dashboard' , style: TextStyle(color: Colors.white),),
       ),
       body: Column(
         children: [
-          Container(
-            color: Color(0xFF4A1C6F), // Purple color
-            padding: EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-            child: Row(
+           Container(
+            color: const Color(0xFF4A1C6F), // Purple color
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+            child: const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Column(
@@ -54,22 +64,22 @@ class AdminPage extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: Container(
-              decoration: BoxDecoration(
+            child:  Container(
+              decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
               ),
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 20),
-                    Text(
+                    const SizedBox(height: 20),
+                    const Text(
                       'Owner Management',
                       style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
@@ -87,35 +97,37 @@ class AdminPage extends StatelessWidget {
                           label: 'Delete Role',
                           onTap: () {
                             Navigator.of(context).push(
-                            MaterialPageRoute(builder: (context) => DeleteRole()),
+                            MaterialPageRoute(builder: (context) => const DeleteRole()),
                             );
                           },
                         ),
                       ],
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     Center(
                       child: ManagementCard(
                         iconPath: 'assets/image/confirm.png', // Replace with your icon image path
                         label: 'Confirm Request',
                         onTap: () {
                           Navigator.of(context).push(
-                            MaterialPageRoute(builder: (context) => Confirm()),
+                            MaterialPageRoute(builder: (context) => const Confirm()),
                           );
                         },
                       ),
                     ),
-                    SizedBox(height: 60),
-                    Text(
+                    const SizedBox(height: 60),
+                    const Text(
                       'App Management',
                       style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
-                    SizedBox(height: 10),
+                    ElevatedButton(onPressed: getLocation, child: const Text('GET LOCATION')),
+                    const SizedBox(height: 10),
+                    
                     Center(
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Color.fromARGB(154, 105, 91, 117), // Button background color
-                          padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 32.0),
+                          backgroundColor: const Color.fromARGB(154, 105, 91, 117), // Button background color
+                          padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 32.0),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -123,7 +135,7 @@ class AdminPage extends StatelessWidget {
                         onPressed: () {
                           // Add your onTap functionality here
                         },
-                        child: Text(
+                        child:const  Text(
                           'Send Notification App',
                           style: TextStyle(
                             color: Colors.white,
@@ -145,6 +157,7 @@ class AdminPage extends StatelessWidget {
 }
 
 class ManagementCard extends StatelessWidget {
+
   final String iconPath;
   final String label;
   final VoidCallback onTap;
@@ -153,6 +166,7 @@ class ManagementCard extends StatelessWidget {
     required this.iconPath,
     required this.label,
     required this.onTap,
+    super.key
   });
 
   @override
@@ -168,7 +182,7 @@ class ManagementCard extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Image.asset(iconPath, height: 50), // Displaying icon image
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Text(label, textAlign: TextAlign.center),
             ],
           ),

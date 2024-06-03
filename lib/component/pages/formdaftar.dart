@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class FormDaftar extends StatefulWidget {
+   const FormDaftar({super.key});
   @override
-  _FormDaftarState createState() => _FormDaftarState();
+  FormDaftarState createState() => FormDaftarState();
 }
 
-class _FormDaftarState extends State<FormDaftar> {
+class FormDaftarState extends State<FormDaftar> {
   final _formKey = GlobalKey<FormState>();
 
   final TextEditingController _nameController = TextEditingController();
@@ -31,9 +32,9 @@ class _FormDaftarState extends State<FormDaftar> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Form Pendaftaran'),
+        title: const Text('Form Pendaftaran'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -46,14 +47,14 @@ class _FormDaftarState extends State<FormDaftar> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              Text(
+             const  Text(
                 'Bahasa Inggris > Cinderella Course',
                 style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               TextFormField(
                 controller: _nameController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Insert Your Name',
                   prefixIcon: Icon(Icons.person, color: Color(0xFF4A1C6F)),
                   border: OutlineInputBorder(),
@@ -65,10 +66,10 @@ class _FormDaftarState extends State<FormDaftar> {
                   return null;
                 },
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               TextFormField(
                 controller: _emailController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Email',
                   prefixIcon: Icon(Icons.email, color: Color(0xFF4A1C6F)),
                   border: OutlineInputBorder(),
@@ -80,10 +81,10 @@ class _FormDaftarState extends State<FormDaftar> {
                   return null;
                 },
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               TextFormField(
                 controller: _passwordController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Password',
                   prefixIcon: Icon(Icons.lock, color: Color(0xFF4A1C6F)),
                   suffixIcon: Icon(Icons.visibility, color: Color(0xFF4A1C6F)),
@@ -97,10 +98,10 @@ class _FormDaftarState extends State<FormDaftar> {
                   return null;
                 },
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               TextFormField(
                 controller: _phoneController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Phone Number',
                   prefixIcon: Icon(Icons.phone, color: Color(0xFF4A1C6F)),
                   border: OutlineInputBorder(),
@@ -112,19 +113,19 @@ class _FormDaftarState extends State<FormDaftar> {
                   return null;
                 },
               ),
-              SizedBox(height: 16.0),
+             const SizedBox(height: 16.0),
               TextFormField(
                 controller: _emergencyContactController,
-                decoration: InputDecoration(
-                  labelText: 'Kontak Darurat (Opsional)',
+                decoration: const InputDecoration(
+                  labelText:  'Kontak Darurat (Opsional)',
                   prefixIcon: Icon(Icons.phone, color: Color(0xFF4A1C6F)),
                   border: OutlineInputBorder(),
                 ),
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               DropdownButtonFormField<String>(
-                decoration: InputDecoration(
-                  labelText: 'Pendidikan Terakhir',
+                decoration:const InputDecoration(
+                  labelText:  'Pendidikan Terakhir',
                   prefixIcon: Icon(Icons.school, color: Color(0xFF4A1C6F)),
                   border: OutlineInputBorder(),
                 ),
@@ -143,10 +144,10 @@ class _FormDaftarState extends State<FormDaftar> {
                   return null;
                 },
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               TextFormField(
                 controller: _dateController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Tanggal Masuk',
                   prefixIcon: Icon(Icons.calendar_today, color: Color(0xFF4A1C6F)),
                   border: OutlineInputBorder(),
@@ -167,11 +168,11 @@ class _FormDaftarState extends State<FormDaftar> {
                   }
                 },
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               Row(
                 children: [
                   Checkbox(value: false, onChanged: (bool? value) {}),
-                  Expanded(
+                  const Expanded(
                     child: Text(
                       'Dengan ini, anda telah menyetujui Peraturan & Ketentuan yang berlaku',
                       style: TextStyle(fontSize: 14.0),
@@ -179,7 +180,7 @@ class _FormDaftarState extends State<FormDaftar> {
                   ),
                 ],
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
@@ -187,11 +188,11 @@ class _FormDaftarState extends State<FormDaftar> {
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          title: Text('Selamat!'),
-                          content: Text('Anda telah terdaftar di Course ini!'),
+                          title: const Text('Selamat!'),
+                          content:  const Text('Anda telah terdaftar di Course ini!'),
                           actions: <Widget>[
                             TextButton(
-                              child: Text('OK'),
+                              child:const  Text('OK'),
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
@@ -203,9 +204,9 @@ class _FormDaftarState extends State<FormDaftar> {
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF4A1C6F),
+                  backgroundColor:const  Color(0xFF4A1C6F),
                 ),
-                child: Text('Submit', style: TextStyle(color: Colors.white),),
+                child:const  Text('Submit', style: TextStyle(color: Colors.white),),
               ),
             ],
           ),
@@ -215,6 +216,6 @@ class _FormDaftarState extends State<FormDaftar> {
   }
 }
 
-void main() => runApp(MaterialApp(
+void main() => runApp(const MaterialApp(
       home: FormDaftar(),
     ));

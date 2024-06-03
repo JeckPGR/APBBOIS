@@ -5,15 +5,17 @@ import 'package:flutter_application_1/component/pages/coursedetail.dart';
 import 'package:flutter_application_1/component/pages/requestowner.dart';
 
 class ProfilePage extends StatelessWidget {
+  const ProfilePage({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+         centerTitle: true,
         title: const Text(
           'My Profile',
           style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
         ),
-        backgroundColor: const Color.fromARGB(255, 58, 20, 88),
+        backgroundColor: const Color(0xFF4A1C6F),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -26,7 +28,7 @@ class ProfilePage extends StatelessWidget {
                   Container(
                     width: 80,
                     height: 80,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       shape: BoxShape.circle,
                       image: DecorationImage(
                         image: AssetImage('assets/image/profile.png'), // Replace with the actual image asset path
@@ -35,7 +37,7 @@ class ProfilePage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 16),
-                  Column(
+                  const Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
@@ -51,7 +53,7 @@ class ProfilePage extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 20),
-              Text(
+              const Text(
                 'Your Course',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
@@ -94,7 +96,7 @@ class ProfilePage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-              Text(
+              const Text(
                 'Find More',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
@@ -105,7 +107,7 @@ class ProfilePage extends StatelessWidget {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => PersonalInfoPage()),
+                    MaterialPageRoute(builder: (context) => const PersonalInfoPage()),
                   );
                 },
               ),
@@ -129,7 +131,7 @@ class ProfilePage extends StatelessWidget {
                 onTap: () {
                   Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => RequestOwnerPage(),
+                    builder: (context) => const RequestOwnerPage(),
                   ),
                 );
                 },
@@ -174,10 +176,10 @@ class ProfilePage extends StatelessWidget {
         );
       },
       child: Card(
-        margin: EdgeInsets.symmetric(horizontal: 8.0),
+        margin: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Container(
           width: 160,
-          padding: EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(8.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -185,15 +187,15 @@ class ProfilePage extends StatelessWidget {
               const SizedBox(height: 5),
               Text(
                 title,
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
               Text(
                 rating,
-                style: TextStyle(color: Colors.grey),
+                style: const TextStyle(color: Colors.grey),
               ),
               Text(
                 weeks,
-                style: TextStyle(color: Colors.grey),
+                style: const TextStyle(color: Colors.grey),
               ),
             ],
           ),
@@ -210,7 +212,7 @@ class ProfilePage extends StatelessWidget {
     return ListTile(
       leading: Icon(icon, color: Colors.black),
       title: Text(title),
-      trailing: Icon(Icons.chevron_right, color: Colors.grey),
+      trailing: const Icon(Icons.chevron_right, color: Colors.grey),
       onTap: onTap,
     );
   }
@@ -219,23 +221,23 @@ class ProfilePage extends StatelessWidget {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Are you sure?'),
-          content: Text('Do you want to log out?'),
+        return  AlertDialog(
+          title: const Text('Are you sure?'),
+          content: const Text('Do you want to log out?'),
           actions: <Widget>[
             TextButton(
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
               onPressed: () {
                 Navigator.of(context).pop(); // Close the dialog and do nothing
               },
             ),
             TextButton(
-              child: Text('Yes'),
+              child: const Text('Yes'),
               onPressed: () {
                 Navigator.of(context).pop(); // Close the dialog
                 Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(builder: (context) => LoginRegisterScreen()),
+                  MaterialPageRoute(builder: (context) => const LoginRegisterScreen()),
                   (Route<dynamic> route) => false,
                 ); // Navigate to login page
               },

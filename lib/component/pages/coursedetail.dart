@@ -8,19 +8,20 @@ class CourseDetailPage extends StatefulWidget {
   final List<String> courseDays;
   final List<String> holidays;
 
-  CourseDetailPage({
+  const CourseDetailPage({
     required this.title,
     required this.description,
     required this.imagePath,
     required this.courseDays,
     required this.holidays,
+    super.key
   });
 
   @override
-  _CourseDetailPageState createState() => _CourseDetailPageState();
+  CourseDetailPageState createState() => CourseDetailPageState();
 }
 
-class _CourseDetailPageState extends State<CourseDetailPage> {
+class CourseDetailPageState extends State<CourseDetailPage> {
   bool isDescriptionSelected = true;
   bool isLoved = false;
 
@@ -167,7 +168,7 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 10),
-                  Column(
+                  const Column(
                     children: [
                       CommentWidget(
                         name: 'Goo Youn Jung',
@@ -212,20 +213,20 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
                       child: ElevatedButton(
                         onPressed: () {
                           Navigator.of(context).push(
-                            MaterialPageRoute(builder: (context) => FormDaftar()),
+                            MaterialPageRoute(builder: (context) => const  FormDaftar()),
                           );
                         },
-                        child: Text(
-                          'DAFTAR',
-                          style: TextStyle(color: Colors.white), // Warna teks menjadi putih
-                        ),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xFF4A1C6F), // Warna latar belakang ungu
+                          backgroundColor: const Color(0xFF4A1C6F), // Warna latar belakang ungu
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20),
                           ),
                           padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                          minimumSize: Size(double.infinity, 50), // Tombol menjadi lebih lebar
+                          minimumSize: const Size(double.infinity, 50), // Tombol menjadi lebih lebar
+                        ),
+                          child: const Text(
+                          'DAFTAR',
+                          style: TextStyle(color: Colors.white), // Warna teks menjadi putih
                         ),
                       ),
                     ),
@@ -244,9 +245,10 @@ class CommentWidget extends StatelessWidget {
   final String name;
   final String comment;
 
-  CommentWidget({
+  const CommentWidget({
     required this.name,
     required this.comment,
+    super.key
   });
 
   @override

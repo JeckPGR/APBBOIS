@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'signuppage.dart';
 import 'homepage.dart';
 import 'forgotpassword.dart';
@@ -7,16 +8,17 @@ import 'adminpage.dart';
 import '../../Controller/firebase_auth_services.dart';
 
 class LoginRegisterScreen extends StatefulWidget {
+    const LoginRegisterScreen({super.key});
   @override
   State<LoginRegisterScreen> createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginRegisterScreen> {
   final FirebaseAuthService _auth = FirebaseAuthService();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-
   @override
   void dispose() {
     _emailController.dispose();
@@ -50,7 +52,7 @@ class _LoginScreenState extends State<LoginRegisterScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Spacer(flex: 1), // Add space before the content
+                    const Spacer(flex: 1), // Add space before the content
                     Image.asset(
                       'assets/image/Login.png',
                       height: constraints.maxHeight * 0.2, // 20% of screen height
@@ -62,9 +64,9 @@ class _LoginScreenState extends State<LoginRegisterScreen> {
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 20),
-                    TextField(
+                    TextFormField(
                       controller: _emailController,
-                      style: TextStyle(color: Colors.white),
+                      style:  const TextStyle(color: Colors.white),
                       decoration: InputDecoration(
                         labelText: 'Email',
                         hintText: 'Enter your email',
@@ -77,7 +79,7 @@ class _LoginScreenState extends State<LoginRegisterScreen> {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    TextField(
+                    TextFormField(
                       controller: _passwordController,
                       style: const TextStyle(color: Colors.white),
                       decoration: InputDecoration(
@@ -96,7 +98,7 @@ class _LoginScreenState extends State<LoginRegisterScreen> {
                       alignment: Alignment.centerRight,
                       child: TextButton(
                         onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => ForgotPasswordPage()));
+                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ForgotPasswordPage()));
                         },
                         child: const Text(
                           'Forgot Password?',
@@ -111,14 +113,18 @@ class _LoginScreenState extends State<LoginRegisterScreen> {
                         onPressed: () {
                           _signIn();
                         },
-                        child: Text(
-                          'Sign In',
-                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16.0),
-                        ),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30.0),
+                          ),
+                        ),
+                        child: const Text(
+                          'Sign In',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16.0,
                           ),
                         ),
                       ),
@@ -139,7 +145,7 @@ class _LoginScreenState extends State<LoginRegisterScreen> {
                         icon: Image.asset('assets/image/google.png', height: 24), // Update this to your Google icon path
                         label: const Text('Sign in with Google', style: TextStyle(color: Colors.white)),
                         style: OutlinedButton.styleFrom(
-                          side: BorderSide(color: Colors.white),
+                          side:  const BorderSide(color: Colors.white),
                           backgroundColor: const Color.fromARGB(0, 255, 255, 255),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30.0),
@@ -161,7 +167,7 @@ class _LoginScreenState extends State<LoginRegisterScreen> {
                         textAlign: TextAlign.center,
                       ),
                     ),
-                    Spacer(flex: 1), // Add space after the content
+                    const Spacer(flex: 1), // Add space after the content
                   ],
                 ),
               ),
@@ -172,32 +178,65 @@ class _LoginScreenState extends State<LoginRegisterScreen> {
     );
   }
 
-  void _signIn() async {
-    String email = _emailController.text.trim();
-    String password = _passwordController.text.trim();
+  Future<void> _signIn() async {
+  try {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
 
-    try {
-      User? user = await _auth.signInWithEmailAndPassword(email, password);
-      if (user != null) {
-        print('User signed in: ${user.email}');
-        if (email == 'admin@gmail.com') {
+    User? user = await _auth.signInWithEmailAndPassword(email, password);
+
+    if (user != null) {
+      if (!mounted) return; // Check if the widget is still mounted
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return const Center(child: CircularProgressIndicator());
+        },
+      );
+
+      DocumentSnapshot<Map<String, dynamic>> userDoc =
+          await _firestore.collection('Users').doc(user.uid).get();
+
+      if (!mounted) return; // Check again if the widget is still mounted
+      Navigator.of(context).pop();
+
+      if (userDoc.exists) {
+        String role = userDoc.data()?['role'] ?? 'regular';
+
+        if (role == "admin") {
+          if (!mounted) return; // Check again if the widget is still mounted
           Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => AdminPage())
-          );
+              MaterialPageRoute(builder: (context) => const AdminPage()));
         } else {
+          if (!mounted) return; // Check again if the widget is still mounted
           Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => Homepage())
-          );
+              MaterialPageRoute(builder: (context) => const Homepage()));
         }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Sign in failed. Please try again.')),
+          const SnackBar(
+            content: Text('User not found in the database.'),
+            backgroundColor: Colors.red,
+          ),
         );
       }
-    } catch (e) {
+    } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: ${e.toString()}')),
+        const SnackBar(
+          content: Text('Error signing in'),
+          backgroundColor: Colors.red,
+        ),
       );
     }
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Error: ${e.toString()}'),
+        backgroundColor: Colors.red,
+      ),
+    );
   }
+}
+
 }

@@ -1,12 +1,18 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/component/fragments/google_navbar.dart';
 import 'package:flutter_application_1/component/pages/coursepage.dart';
 import 'package:flutter_application_1/component/pages/profilepage.dart';
 import 'package:flutter_application_1/component/pages/coursedetail.dart';
 
+
+
 class Homepage extends StatefulWidget {
+  const Homepage({super.key});
   @override
-  _HomepageState createState() => _HomepageState();
+  HomepageState createState() => HomepageState();
 }
 
 class Course {
@@ -25,9 +31,16 @@ class Course {
   });
 }
 
-class _HomepageState extends State<Homepage> {
+
+
+class HomepageState extends State<Homepage> {
   int _selectedIndex = 0; // Default to Home
   String _selectedCategory = 'Programming'; // Default selected category
+  String? myusername;
+  @override
+  void initState(){
+    super.initState();
+  }
 
   static List<Course> courses = [
     Course(
@@ -65,9 +78,39 @@ class _HomepageState extends State<Homepage> {
     });
   }
 
+  Future<void> _fetch() async {
+    // Initialize Firebase if not already done (consider adding a check)
+    await Firebase.initializeApp();
+
+    final firebaseUser = await FirebaseAuth.instance.currentUser;
+    if (firebaseUser != null) {
+      try {
+        final docSnapshot = await FirebaseFirestore.instance
+            .collection('Users')
+            .doc(firebaseUser.uid)
+            .get();
+        if (docSnapshot.exists) {
+          myusername = docSnapshot.data()!['username'];
+          print(myusername);
+        } else {
+          print('Username not found in document');
+        }
+      } on FirebaseException catch (e) {
+        print('Error fetching username: $e');
+      }
+    } else {
+      print('No signed-in user found');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        elevation: 0.0, // Remove default elevation (shadow)
+        toolbarHeight: 10.0, // Reduce toolbar height
+        backgroundColor: const Color(0xFF4A1C6F),
+      ),
       body: Center(
         child: _buildPageContent(),
       ),
@@ -82,9 +125,9 @@ class _HomepageState extends State<Homepage> {
     if (_selectedIndex == 0) {
       return _buildHomePage();
     } else if (_selectedIndex == 1) {
-      return CoursePage();
+      return const CoursePage();
     } else {
-      return ProfilePage();
+      return const ProfilePage();
     }
   }
 
@@ -94,49 +137,61 @@ class _HomepageState extends State<Homepage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // User Info and Search Bar Section
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(16.0),
-            decoration: const BoxDecoration(
-              color: Color(0xFF4A1C6F),
-              borderRadius: BorderRadius.vertical(
-                bottom: Radius.circular(25.0),
-              ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 50),
-                const Text(
-                  'Hello, Peeps!',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
-                ),
-                const Row(
-                  children: [
-                    Icon(Icons.location_on, color: Colors.white),
-                    Text('Jl. Sukabirus No 15', style: TextStyle(color: Colors.white)),
-                    Spacer(),
-                    Icon(Icons.account_circle, color: Colors.white),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Find Course..',
-                    hintStyle: const TextStyle(color: Colors.white),
-                    prefixIcon: const Icon(Icons.search, color: Colors.white),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                      borderSide: BorderSide.none,
-                    ),
-                    fillColor: const Color.fromARGB(40, 217, 217, 217),
-                    filled: true,
-                  ),
-                  style: const TextStyle(color: Colors.white),
-                ),
-              ],
+         Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(16.0),
+          decoration: const BoxDecoration(
+            color: Color(0xFF4A1C6F),
+            borderRadius: BorderRadius.vertical(
+              bottom: Radius.circular(25.0),
             ),
           ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // const SizedBox(height: 50),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(8.0,0.0,8.2,0),
+                  child: FutureBuilder(
+                    future: _fetch(),
+                    builder: (context,snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator()); // Show a loading indicator
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}'); // Handle errors gracefully
+                      } else {
+                        // Access and display fetched username or other data here
+                        return Text('Hello, $myusername' , style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),); // Example: Display username if fetched
+                      }
+                    },
+                  ),
+                ),
+              const Row(
+                children: [
+                  Icon(Icons.location_on, color: Colors.white),
+                  Text('Jl. Sukabirus No 15', style: TextStyle(color: Colors.white)),
+                  Spacer(),
+                  // Icon(Icons.account_circle, color: Colors.white),
+                ],
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                decoration: InputDecoration(
+                  hintText: 'Find Course..',
+                  hintStyle: const TextStyle(color: Colors.white),
+                  prefixIcon: const Icon(Icons.search, color: Colors.white),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                    borderSide: BorderSide.none,
+                  ),
+                  fillColor: const Color.fromARGB(40, 217, 217, 217),
+                  filled: true,
+                ),
+                style: const TextStyle(color: Colors.white),
+              ),
+            ],
+          ),
+         ),
           const SizedBox(height: 20),
           // New Course Banner
           Padding(
@@ -170,17 +225,17 @@ class _HomepageState extends State<Homepage> {
                           ),
                         ),
                         const SizedBox(height: 5),
-                        ElevatedButton(
+                         ElevatedButton  (
                           onPressed: () {
                             // Implement View Now functionality here
-                          },
-                          child: const  Text('View Now', style:TextStyle(color: Colors.white)),
+                          },  
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color.fromARGB(255, 245, 91, 212),
+                            backgroundColor: const  Color.fromARGB(255, 245, 91, 212),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20),
                             ),
                           ),
+                          child: const  Text('View Now', style:TextStyle(color: Colors.white)),
                         ),
                       ],
                     ),
@@ -351,7 +406,7 @@ class _HomepageState extends State<Homepage> {
     };
 
     if (category == 'Coming Soon...') {
-      return Padding(
+      return  const Padding(
         padding: EdgeInsets.symmetric(vertical: 28.0),
         child:  Center(
           child: Text(

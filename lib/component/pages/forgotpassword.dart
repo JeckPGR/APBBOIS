@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'emailverification.dart';  // Import the email verification screen
 
 class ForgotPasswordPage extends StatelessWidget {
+   const ForgotPasswordPage({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,7 +39,7 @@ class ForgotPasswordPage extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               TextField(
-                style: TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.white),
                 decoration: InputDecoration(
                   hintText: 'Enter your email',
                   hintStyle: TextStyle(color: Colors.white.withOpacity(0.4)),
@@ -53,13 +54,13 @@ class ForgotPasswordPage extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () {
                     Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => EmailVerificationScreen()),
+                      MaterialPageRoute(builder: (context) => const EmailVerificationScreen()),
                     );
                   },
-                  child: const Text('Send', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF6F1EAB), // Button color
                   ),
+                  child: const Text('Send', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                 ),
               ),
             ],

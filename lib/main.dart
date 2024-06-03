@@ -6,10 +6,11 @@ import 'component/pages/loginpage.dart';
  void main() async {
    WidgetsFlutterBinding.ensureInitialized();
    await Firebase.initializeApp();
-   runApp(EduLocalApp());
+   runApp(const EduLocalApp());
 }
 
 class MyApp extends StatelessWidget {
+   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -17,13 +18,14 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: LoginRegisterScreen(),
+      home: const LoginRegisterScreen(),
     );
   }
 }
 
 
 class EduLocalApp extends StatelessWidget {
+   const EduLocalApp({super.key});
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -31,14 +33,15 @@ class EduLocalApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: WelcomeScreen(),
+      home: const WelcomeScreen(),
     );
   }
 }
 
 class WelcomeScreen extends StatelessWidget {
+   const WelcomeScreen({super.key});
   void navigateToLogin(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (_) => LoginRegisterScreen()));
+    Navigator.of(context).push(MaterialPageRoute(builder: (_) => const LoginRegisterScreen()));
   }
 
   @override
@@ -51,7 +54,7 @@ class WelcomeScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            SizedBox(height: 10),
+           const  SizedBox(height: 10),
             RichText(
               text: const TextSpan(
                 style: TextStyle(
@@ -92,7 +95,7 @@ class WelcomeScreen extends StatelessWidget {
                 icon: const Icon(Icons.arrow_forward, color: Colors.white),
                 onPressed: () {
                   Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => LoginRegisterScreen()),
+                    MaterialPageRoute(builder: (context) => const LoginRegisterScreen()),
                   );
                 },
               ),

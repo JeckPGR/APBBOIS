@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'resetpassword.dart';
 
 class EmailVerificationScreen extends StatelessWidget {
+  const EmailVerificationScreen({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,18 +53,18 @@ class EmailVerificationScreen extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () {
                     Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => ResetPasswordPage()),
+                      MaterialPageRoute(builder: (context) => const ResetPasswordPage()),
                     );
                   },
-                  child: const Text(
-                    'Verify',
-                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16.0),
-                  ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF6F1EAB), // Button color
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30.0),
                     ),
+                  ),
+                  child: const Text(
+                    'Verify',
+                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16.0),
                   ),
                 ),
               ),
@@ -79,15 +80,15 @@ class EmailVerificationScreen extends StatelessWidget {
       width: 50,
       height: 50,
       decoration: BoxDecoration(
-        color: Color.fromARGB(145, 110, 30, 171),
+        color: const Color.fromARGB(145, 110, 30, 171),
         borderRadius: BorderRadius.circular(10.0),
       ),
-      child: TextField(
-        style: const TextStyle(color: Colors.white, fontSize: 24),
+      child: const TextField(
+        style:  TextStyle(color: Colors.white, fontSize: 24),
         textAlign: TextAlign.center,
         keyboardType: TextInputType.number,
         maxLength: 1,
-        decoration: const InputDecoration(
+        decoration:  InputDecoration(
           border: InputBorder.none,
           counterText: "",
         ),
