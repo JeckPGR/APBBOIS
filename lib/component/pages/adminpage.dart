@@ -1,42 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/component/pages/confirm.dart';
 import 'package:flutter_application_1/component/pages/deleterole.dart';
+import 'package:flutter_application_1/component/pages/loginpage.dart';
 import 'package:flutter_application_1/component/pages/sendnotif.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:get/get.dart';
 
 class AdminPage extends StatelessWidget {
   const AdminPage({super.key});
-
-  void getLocation() async {
-
-    await Geolocator.checkPermission();
-    await Geolocator.requestPermission();
-    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-    print(position);
-  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor:  const Color(0xFFF5F5F5), // Background color of the body
       appBar: AppBar(
+        toolbarHeight: 20.0,
         backgroundColor: const Color(0xFF4A1C6F), // AppBar background color
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-        title: const Text('Admin Dashboard' , style: TextStyle(color: Colors.white),),
+        
       ),
       body: Column(
         children: [
            Container(
             color: const Color(0xFF4A1C6F), // Purple color
             padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-            child: const Row(
+            child:  Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Column(
+                const Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
@@ -49,17 +37,28 @@ class AdminPage extends StatelessWidget {
                     Text(
                       'Admin Dashboard',
                       style: TextStyle(
-                        fontSize: 30,
+                        fontSize: 24,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
                     ),
                   ],
                 ),
-                CircleAvatar(
-                  radius: 30,
-                  backgroundImage: AssetImage('assets/image/adminprofile.png'), // Replace with your avatar image path
-                ),
+                GestureDetector(
+                    onTap: () async {
+                       Navigator.of(context).pop();
+                        Get.offAll(
+                          () => const LoginRegisterScreen(),
+                          transition: Transition.leftToRight,
+                          duration: const Duration(milliseconds: 500),
+                        );
+                    },
+                    child: const Icon(
+                      Icons.logout, // Replace with your desired logout icon
+                      size: 30,
+                      color: Colors.white, // Adjust color as needed
+                    ),
+                  ),
               ],
             ),
           ),
@@ -88,7 +87,7 @@ class AdminPage extends StatelessWidget {
                           label: 'Send Notification',
                           onTap: () {
                             Navigator.of(context).push(
-                            MaterialPageRoute(builder: (context) => SendNotifPage()),
+                            MaterialPageRoute(builder: (context) => const SendNotifPage()),
                             );
                           },
                         ),
@@ -120,9 +119,7 @@ class AdminPage extends StatelessWidget {
                       'App Management',
                       style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
-                    ElevatedButton(onPressed: getLocation, child: const Text('GET LOCATION')),
                     const SizedBox(height: 10),
-                    
                     Center(
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
@@ -183,7 +180,7 @@ class ManagementCard extends StatelessWidget {
             children: [
               Image.asset(iconPath, height: 50), // Displaying icon image
               const SizedBox(height: 10),
-              Text(label, textAlign: TextAlign.center),
+              Text(label, textAlign: TextAlign.center,style: TextStyle(fontWeight:FontWeight.w600),),
             ],
           ),
         ),

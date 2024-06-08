@@ -1,47 +1,51 @@
-import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'component/pages/loginpage.dart';
 
 
- void main() async {
-   WidgetsFlutterBinding.ensureInitialized();
-   await Firebase.initializeApp();
-   runApp(const EduLocalApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(const EduLocalApp());
 }
-
-class MyApp extends StatelessWidget {
-   const MyApp({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const LoginRegisterScreen(),
-    );
-  }
-}
-
 
 class EduLocalApp extends StatelessWidget {
-   const EduLocalApp({super.key});
+  const EduLocalApp({super.key});
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'EduLocal',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        fontFamily: 'Poppins', // Set default font to Poppins
+        textTheme: TextTheme(
+          headline1: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w300),
+          headline2: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w300),
+          headline3: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w400),
+          headline4: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w400),
+          headline5: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w400),
+          headline6: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w500),
+          subtitle1: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w400),
+          subtitle2: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w500),
+          bodyText1: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w400),
+          bodyText2: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w400),
+          button: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w500),
+          caption: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w400),
+          overline: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w400),
+        ),
       ),
       home: const WelcomeScreen(),
     );
   }
 }
 
+
 class WelcomeScreen extends StatelessWidget {
-   const WelcomeScreen({super.key});
-  void navigateToLogin(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (_) => const LoginRegisterScreen()));
+  const WelcomeScreen({super.key});
+
+  void navigateToLogin() {
+    Get.to(() => const LoginRegisterScreen(), transition: Transition.rightToLeft, duration: Duration(milliseconds: 500));
   }
 
   @override
@@ -54,12 +58,12 @@ class WelcomeScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-           const  SizedBox(height: 10),
+            const SizedBox(height: 10),
             RichText(
               text: const TextSpan(
                 style: TextStyle(
                   fontSize: 24,
-                  fontFamily: 'SourceSansPro',
+                  fontFamily: 'Poppins',
                 ),
                 children: <TextSpan>[
                   TextSpan(
@@ -93,11 +97,7 @@ class WelcomeScreen extends StatelessWidget {
               alignment: Alignment.bottomRight,
               child: IconButton(
                 icon: const Icon(Icons.arrow_forward, color: Colors.white),
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => const LoginRegisterScreen()),
-                  );
-                },
+                onPressed: navigateToLogin,
               ),
             ),
           ],

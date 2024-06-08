@@ -1,33 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_application_1/component/pages/profilepage.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter_application_1/component/pages/profilepage.dart';
 import 'package:bottom_picker/bottom_picker.dart';
 
-class RequestOwnerPage extends StatefulWidget {
-  const RequestOwnerPage({super.key});
+class AddCourse extends StatefulWidget {
+  const AddCourse({super.key});
+
   @override
-  RequestOwnerPageState createState() => RequestOwnerPageState();
+  _AddCourseState createState() => _AddCourseState();
 }
 
-class RequestOwnerPageState extends State<RequestOwnerPage> {
- // Variable declarations
+class _AddCourseState extends State<AddCourse> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _courseNameController = TextEditingController();
-  final TextEditingController _courseEmailController = TextEditingController();
-  final TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _phoneNumberController = TextEditingController();
   final TextEditingController _lowestPriceController = TextEditingController();
   final TextEditingController _highestPriceController = TextEditingController();
-  final TextEditingController _courseLatitudeController = TextEditingController();
-  final TextEditingController _courseLongitudeController = TextEditingController();
-  final TextEditingController _coursePhoneController = TextEditingController();
-  final _syllabusCountController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _latitudeController = TextEditingController();
+  final TextEditingController _longitudeController = TextEditingController();
+  final TextEditingController _syllabusCountController = TextEditingController();
   var _syllabusTitles = List<TextEditingController>.generate(0, (index) => TextEditingController());
   var _syllabusTopics = List<TextEditingController>.generate(0, (index) => TextEditingController());
   final _profileImageFile = ValueNotifier<File?>(null);
@@ -37,7 +34,6 @@ class RequestOwnerPageState extends State<RequestOwnerPage> {
   String imageUrl = '';
   String previousImageUrl = '';
 
-  // 3 Kecamatan Usage
   final List<String> _kecamatanList = [
     'Buah Batu',
     'Bojongsoang',
@@ -67,7 +63,7 @@ class RequestOwnerPageState extends State<RequestOwnerPage> {
     'Sumur Bandung',
   ];
 
-  final List<bool> _isOpenOn = List.filled(7, false); // Initially all days are closed
+  final List<bool> _isOpenOn = List.filled(7, false);
 
   final Map<String, int> _dayNameToIndex = {
     'Monday': 0,
@@ -80,7 +76,7 @@ class RequestOwnerPageState extends State<RequestOwnerPage> {
   };
 
   Widget _buildCheckbox(String dayName) {
-    final int index = _dayNameToIndex[dayName]!; // Get index from map
+    final int index = _dayNameToIndex[dayName]!;
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
@@ -97,7 +93,7 @@ class RequestOwnerPageState extends State<RequestOwnerPage> {
     );
   }
 
-  Widget _buildTextField(TextEditingController controller, String labelText, String hintText, int maxLines , {TextInputType keyboardType = TextInputType.text, String? Function(String?)? validator, }) {
+  Widget _buildTextField(TextEditingController controller, String labelText, String hintText, {TextInputType keyboardType = TextInputType.text, String? Function(String?)? validator}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6.0),
       child: Column(
@@ -106,16 +102,14 @@ class RequestOwnerPageState extends State<RequestOwnerPage> {
           Text(
             labelText,
             style: const TextStyle(
-              fontSize: 16.0,
-              fontWeight: FontWeight.bold,
+              fontSize: 14.0,
+              fontWeight: FontWeight.w600,
               color: Color(0xFF4A1C6F),
             ),
           ),
           const SizedBox(height: 8.0),
           TextFormField(
             controller: controller,
-            maxLines: maxLines,
-            style: const TextStyle(fontSize: 14.0),
             decoration: InputDecoration(
               hintText: hintText,
               hintStyle: const TextStyle(color: Color(0xFF4A1C6F), fontSize: 13.0),
@@ -142,17 +136,16 @@ class RequestOwnerPageState extends State<RequestOwnerPage> {
 
   IconData _getIconForLabel(String label) {
     switch (label) {
+      case 'Course Pricing':
+        return Icons.attach_money_outlined;
       case 'Name':
       case 'Course Name':
-      case 'Owner Name':
         return Icons.person;
       case 'Email':
       case 'Course Email':
-      case 'Owner Email':
         return Icons.email;
       case 'Phone Number':
       case 'Course Phone Number':
-      case 'Owner Number':
         return Icons.phone;
       case 'Course Location':
         return Icons.location_on;
@@ -218,11 +211,11 @@ class RequestOwnerPageState extends State<RequestOwnerPage> {
       child: Row(
         children: [
           Expanded(
-            child: _buildTextField(_lowestPriceController, 'Lowest Price', "Enter lowest price", 1, keyboardType: TextInputType.number),
+            child: _buildTextField(_lowestPriceController, 'Lowest Price', "Enter lowest price", keyboardType: TextInputType.number),
           ),
           const SizedBox(width: 16.0),
           Expanded(
-            child: _buildTextField(_highestPriceController, 'Highest Price', "Enter highest price", 1, keyboardType: TextInputType.number, validator: (value) {
+            child: _buildTextField(_highestPriceController, 'Highest Price', "Enter highest price", keyboardType: TextInputType.number, validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Please enter Highest Price';
               }
@@ -237,7 +230,97 @@ class RequestOwnerPageState extends State<RequestOwnerPage> {
     );
   }
 
-  // Bottom picker for Course Type
+  Future<void> _addCourse() async {
+    if (_formKey.currentState!.validate()) {
+      try {
+        final userNow = FirebaseAuth.instance.currentUser!;
+        final userId = userNow.uid;
+        final now = DateTime.now();
+        final timestamp = Timestamp.fromDate(now);
+
+        final List<String> selectedOpenDays = [];
+        for (int i = 0; i < _isOpenOn.length; i++) {
+          if (_isOpenOn[i]) {
+            selectedOpenDays.add(_dayNameToIndex.keys.toList()[i]);
+          }
+        }
+
+        if (imageUrl.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please upload the image')));
+          return;
+        }
+        final String coursePricing = '${_lowestPriceController.text} - ${_highestPriceController.text}';
+
+        final courseData = {
+          'course_name': _nameController.text,
+          'course_email': _emailController.text,
+          'course_phone_number': _phoneNumberController.text,
+          'course_pricing': coursePricing,
+          'course_Type': _selectedCourseType,
+          'course_subdistrict': _selectedLocation,
+          'course_latitude': double.tryParse(_latitudeController.text) ?? 0.0,
+          'course_longitude': double.tryParse(_longitudeController.text) ?? 0.0,
+          'course_description': _descriptionController.text,
+          'last_updated': timestamp,
+          'courseId': '', // Initially empty placeholder
+          'ownerId': userId,
+          'course_open_days': selectedOpenDays,
+          'course_image_url': imageUrl,
+          'course_rating': 2.5,
+          'syllabi': [], // Add syllabi array
+        };
+
+        final courseRef = await FirebaseFirestore.instance.collection('Courses').add(courseData);
+        final courseId = courseRef.id;
+
+        await FirebaseFirestore.instance.collection('Courses').doc(courseId).update({
+          'courseId': courseId,
+        });
+
+        final userDoc = FirebaseFirestore.instance.collection('Users').doc(userId);
+        await userDoc.update({
+          'courses': FieldValue.arrayUnion([courseId]),
+        });
+
+         // Create Syllabus in Firestore
+        final List<Map<String, dynamic>> syllabusData = [];
+        for (int i = 0; i < _syllabusTitles.length; i++) {
+          int syllabusMeetings = int.tryParse(_syllabusTopics[i].text) ?? 0; // Ensure syllabusMeetings is an integer
+          syllabusData.add({
+            'syllabusId': '',
+            'courseId': courseId,
+            'syllabusTitles': _syllabusTitles[i].text,
+            'syllabusMeetings': syllabusMeetings,
+          });
+        }
+        final List<String> syllabusIds = [];
+        for (var syllabus in syllabusData) {
+          final syllabusRef = await FirebaseFirestore.instance.collection('Syllabus').add(syllabus);
+          final syllabusId = syllabusRef.id;
+          await FirebaseFirestore.instance.collection('Syllabus').doc(syllabusId).update({
+            'syllabusId': syllabusId,
+          });
+          syllabusIds.add(syllabusId);
+        }
+
+        // Update course with syllabus IDs
+        await FirebaseFirestore.instance.collection('Courses').doc(courseId).update({
+          'syllabi': syllabusIds,
+        });
+
+
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Course added successfully!')));
+        Navigator.pop(context);
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const ProfilePage()),
+        );
+      } on FirebaseException catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to add course: $e')));
+      }
+    }
+  }
+
   void _showCourseTypePicker(BuildContext context) {
     List<String> courseTypes = ['English', 'Programming'];
 
@@ -264,8 +347,6 @@ class RequestOwnerPageState extends State<RequestOwnerPage> {
     ).show(context);
   }
 
-
-  // Bottom picker for Subdistrict
   void _showSubdistrictPicker(BuildContext context) {
     BottomPicker(
       pickerTitle: const Text(
@@ -290,116 +371,14 @@ class RequestOwnerPageState extends State<RequestOwnerPage> {
     ).show(context);
   }
 
-  void _submitForm() async {
-    if (_formKey.currentState!.validate()) {
-      try {
-        final selectedCourseType = _selectedCourseType;
-        final now = DateTime.now();
-        final timestamp = Timestamp.fromDate(now);
-        final userNow = FirebaseAuth.instance.currentUser!; // Get current user
-        final userId = userNow.uid;
-
-        // Create a list to store selected open days
-        final List<String> selectedOpenDays = [];
-        for (int i = 0; i < _isOpenOn.length; i++) {
-          if (_isOpenOn[i]) {
-            selectedOpenDays.add(_dayNameToIndex.keys.toList()[i]);
-          }
-        }
-        const double courserating = 2.5;
-
-        // Create the course pricing string
-        final String coursePricing = '${_lowestPriceController.text} - ${_highestPriceController.text}';
-
-        final courseData = {
-          'course_name': _courseNameController.text,
-          'course_email': _courseEmailController.text,
-          'course_phone_number': _coursePhoneController.text,
-          'course_pricing': coursePricing,
-          'course_Type': selectedCourseType,
-          'course_subdistrict': _selectedLocation,
-          'course_latitude': double.tryParse(_courseLatitudeController.text) ?? 0.0,
-          'course_longitude': double.tryParse(_courseLongitudeController.text) ?? 0.0,
-          'course_description': _descriptionController.text,
-          'course_rating': courserating,
-          'last_updated': timestamp,
-          'courseId': '', // Initially empty placeholder
-          'ownerId': userId,
-          'course_open_days': selectedOpenDays,
-          'course_image_url': imageUrl,
-          'syllabi': [], // Initialize syllabi as an empty array
-        };
-
-        // Create course in Firestore
-        final courseRef = await FirebaseFirestore.instance.collection('Courses').add(courseData);
-        final courseId = courseRef.id; // Get the generated ID
-
-        // Update the course with courseId
-        await FirebaseFirestore.instance.collection('Courses').doc(courseId).update({
-          'courseId': courseId,
-        });
-
-        // Create Syllabus in Firestore
-        final List<Map<String, dynamic>> syllabusData = [];
-        for (int i = 0; i < _syllabusTitles.length; i++) {
-          int syllabusMeetings = int.tryParse(_syllabusTopics[i].text) ?? 0; // Ensure syllabusMeetings is an integer
-          syllabusData.add({
-            'syllabusId': '',
-            'courseId': courseId,
-            'syllabusTitles': _syllabusTitles[i].text,
-            'syllabusMeetings': syllabusMeetings,
-          });
-        }
-
-        final List<String> syllabusIds = [];
-        for (var syllabus in syllabusData) {
-          final syllabusRef = await FirebaseFirestore.instance.collection('Syllabus').add(syllabus);
-          final syllabusId = syllabusRef.id;
-          await FirebaseFirestore.instance.collection('Syllabus').doc(syllabusId).update({
-            'syllabusId': syllabusId,
-          });
-          syllabusIds.add(syllabusId);
-        }
-
-        // Update course with syllabus IDs
-        await FirebaseFirestore.instance.collection('Courses').doc(courseId).update({
-          'syllabi': syllabusIds,
-        });
-
-        // Update user role
-        final user = FirebaseAuth.instance.currentUser!;
-
-        await FirebaseFirestore.instance.collection('Users').doc(user.uid).update({
-          'isRequestOwner': true,
-          'requestbecomeowner': timestamp,
-          'courses': FieldValue.arrayUnion([courseId]), // Add course ID to user's courses array
-        });
-
-        // Show success message
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Request submitted successfully!')),
-        );
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const ProfilePage()),
-        );
-      } on FirebaseException catch (e) {
-        // Handle potential Firebase errors
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('An error occurred: ${e.message}')),
-        );
-      }
-    }
-  }
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: 55.0,
         centerTitle: true,
+        title: const Text('Add Course', style: TextStyle(color: Colors.white)),
         backgroundColor: const Color(0xFF4A1C6F),
-        title: const Text('Regist Owner', style: TextStyle(color: Color.fromARGB(255, 255, 255, 255))),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -408,14 +387,14 @@ class RequestOwnerPageState extends State<RequestOwnerPage> {
           child: ListView(
             children: [
               const Text(
-                'Personal Information',
+                'Course Information',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24.0),
               ),
               const SizedBox(height: 8),
-              const Text('Fill this form with your personal information'),
+              const Text('Fill this form with your course information'),
               const SizedBox(height: 16),
-              _buildTextField(_nameController, 'Owner Name', "dzakyrazi", 1),
-              _buildTextField(_emailController, 'Owner Email', "dzakyrazi@gmail.com", 1, keyboardType: TextInputType.emailAddress, validator: (value) {
+              _buildTextField(_nameController, 'Course Name', 'Insert Your Course name'),
+              _buildTextField(_emailController, 'Course Email', 'Insert Your Course email', keyboardType: TextInputType.emailAddress, validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Please enter your email';
                 }
@@ -424,25 +403,14 @@ class RequestOwnerPageState extends State<RequestOwnerPage> {
                 }
                 return null;
               }),
-              _buildTextField(_phoneController, 'Owner Number', "087794780139", 1, keyboardType: TextInputType.phone),
-              const SizedBox(height: 16),
-              const Text(
-                'Course Information',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24.0),
-              ),
-              const SizedBox(height: 8),
-              const Text('Fill this form with your Course information'),
-              const SizedBox(height: 16),
-              _buildTextField(_courseNameController, 'Course Name', "Insert Your Course name",1 , ),
-              _buildTextField(_courseEmailController, 'Course Email', "Insert Your Course email", 1,  keyboardType: TextInputType.emailAddress, validator: (value) {}),
-              _buildTextField(_coursePhoneController, 'Course Phone Number', "Insert Your Course number", 1, keyboardType: TextInputType.phone),
+              _buildTextField(_phoneNumberController, 'Course Phone Number', 'Insert Your Course Number', keyboardType: TextInputType.phone),
               _buildPriceRangeFields(),
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 6.0),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 6.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       "Course Type",
                       style: TextStyle(
                         fontSize: 16.0,
@@ -450,36 +418,36 @@ class RequestOwnerPageState extends State<RequestOwnerPage> {
                         color: Color(0xFF4A1C6F),
                       ),
                     ),
-                    SizedBox(height: 8.0),
+                    const SizedBox(height: 8.0),
+                    GestureDetector(
+                      onTap: () => _showCourseTypePicker(context),
+                      child: AbsorbPointer(
+                        child: TextFormField(
+                          controller: TextEditingController(text: _selectedCourseType),
+                          decoration: const InputDecoration(
+                            hintText: "Input Your Course Type",
+                            hintStyle: TextStyle(color: Color(0xFF4A1C6F), fontSize: 13.0),
+                            prefixIcon: Icon(Icons.type_specimen_sharp, color: Color(0xFF4A1C6F)),
+                            border: OutlineInputBorder(),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please select a course type';
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
-              GestureDetector(
-                onTap: () => _showCourseTypePicker(context),
-                child: AbsorbPointer(
-                  child: TextFormField(
-                    controller: TextEditingController(text: _selectedCourseType),
-                    decoration: const InputDecoration(
-                      hintText: "Input Your Course Type",
-                      hintStyle: TextStyle(color: Color(0xFF4A1C6F), fontSize: 13.0),
-                      prefixIcon: Icon(Icons.type_specimen_sharp, color: Color(0xFF4A1C6F)),
-                      border: OutlineInputBorder(),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please select a course type';
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-              ),
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 6.0),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 6.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       "Course Subdistrict",
                       style: TextStyle(
                         fontSize: 16.0,
@@ -487,34 +455,33 @@ class RequestOwnerPageState extends State<RequestOwnerPage> {
                         color: Color(0xFF4A1C6F),
                       ),
                     ),
-                    SizedBox(height: 8.0),
+                    const SizedBox(height: 8.0),
+                    GestureDetector(
+                      onTap: () => _showSubdistrictPicker(context),
+                      child: AbsorbPointer(
+                        child: TextFormField(
+                          controller: TextEditingController(text: _selectedLocation),
+                          decoration: const InputDecoration(
+                            hintText: "Input Your Course Subdistrict",
+                            hintStyle: TextStyle(color: Color(0xFF4A1C6F), fontSize: 13.0),
+                            prefixIcon: Icon(Icons.location_city_rounded, color: Color(0xFF4A1C6F)),
+                            border: OutlineInputBorder(),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please select a subdistrict';
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
-              GestureDetector(
-                onTap: () => _showSubdistrictPicker(context),
-                child: AbsorbPointer(
-                  child: TextFormField(
-                    controller: TextEditingController(text: _selectedLocation),
-                    decoration: const InputDecoration(
-                      hintText: "Input Your Course Subdistrict",
-                      hintStyle: TextStyle(color: Color(0xFF4A1C6F), fontSize: 13.0),
-                      prefixIcon: Icon(Icons.location_city_rounded, color: Color(0xFF4A1C6F)),
-                      border: OutlineInputBorder(),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please select a subdistrict';
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-              ),
-              _buildTextField(_courseLatitudeController, 'Course Latitude', "Insert Your Course latitude",1),
-              _buildTextField(_courseLongitudeController, 'Course Longitude', "Insert Your Course longitude",1),
-              _buildTextField(_descriptionController, 'Course Description', "",4),
-              const SizedBox(height: 16),
+              _buildTextField(_latitudeController, 'Course Latitude', 'Insert Your Course latitude'),
+              _buildTextField(_longitudeController, 'Course Longitude', 'Insert Your Course longitude'),
+              _buildTextField(_descriptionController, 'Course Description', 'Insert Your Course description', keyboardType: TextInputType.multiline),
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 6.0),
                 child: Column(
@@ -551,7 +518,6 @@ class RequestOwnerPageState extends State<RequestOwnerPage> {
                     ),
                     const SizedBox(height: 8.0),
                     TextFormField(
-                      style: const TextStyle(fontSize: 14.0),
                       controller: _syllabusCountController,
                       keyboardType: TextInputType.number,
                       decoration: const InputDecoration(
@@ -574,11 +540,11 @@ class RequestOwnerPageState extends State<RequestOwnerPage> {
                         final newSyllabusCount = int.tryParse(value) ?? 0;
                         setState(() {
                           _syllabusTitles = List<TextEditingController>.generate(
-                            newSyllabusCount.clamp(0, 10), // Clamp between 0 and 10
+                            newSyllabusCount.clamp(0, 10),
                             (index) => TextEditingController(),
                           );
                           _syllabusTopics = List<TextEditingController>.generate(
-                            newSyllabusCount.clamp(0, 10), // Clamp between 0 and 10
+                            newSyllabusCount.clamp(0, 10),
                             (index) => TextEditingController(),
                           );
                         });
@@ -616,8 +582,8 @@ class RequestOwnerPageState extends State<RequestOwnerPage> {
                       Expanded(
                         child: TextFormField(
                           keyboardType:TextInputType.number,
-                          style: const TextStyle(fontSize: 14.0),
                           controller: _syllabusTopics[index],
+                          style: const TextStyle(fontSize: 14.0),
                           decoration: InputDecoration(
                             labelText: "Syllabus #${index + 1} Topic",
                             labelStyle: const TextStyle(color: Color(0xFF4A1C6F), fontSize: 13.0),
@@ -636,12 +602,13 @@ class RequestOwnerPageState extends State<RequestOwnerPage> {
                   ),
                 );
               }).toList(),
+              const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: _submitForm,
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(const Color(0xFF4A1C6F)),
+                onPressed: _addCourse,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF4A1C6F),
                 ),
-                child: const Text('Confirm', style: TextStyle(color: Colors.white, fontSize: 16.0, fontWeight: FontWeight.w900)),
+                child: const Text('Add Course', style: TextStyle(color: Colors.white)),
               ),
             ],
           ),
